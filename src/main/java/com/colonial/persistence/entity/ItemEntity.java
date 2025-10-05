@@ -7,6 +7,9 @@ import jakarta.persistence.*;
 @Table(name = "item")
 @IdClass(ItemId.class)
 public class ItemEntity {
+
+    public ItemEntity(){
+    }
     @Id
     @Column(name = "id_transaction")
     private Integer idTransaction;

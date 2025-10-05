@@ -19,15 +19,27 @@ repositories {
 }
 
 dependencies {
+    //JPA
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    //Security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+    //Thymeleaf
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    //Validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+    //Web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    //Devtools
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    //DockerCompose
 	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+    //Postgres
 	runtimeOnly 'org.postgresql:postgresql'
+    //Mapstruc
+    implementation 'org.mapstruct:mapstruct:1.6.3'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

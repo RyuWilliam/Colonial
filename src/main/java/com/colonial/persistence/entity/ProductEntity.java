@@ -1,11 +1,15 @@
 package com.colonial.persistence.entity;
 
 
+import com.colonial.domain.enums.ProductCategory;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "product")
 public class ProductEntity {
+
+    public ProductEntity(){
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_product")
@@ -18,13 +22,22 @@ public class ProductEntity {
     private String description;
 
     @Column(nullable = false)
-    private Double price;
+    private Double acquisitionPrice;
 
     @Column(nullable = false)
     private Integer stock;
 
-    @Column(nullable = false)
-    private String category;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
+    private ProductCategory category;
+
+    public ProductCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(ProductCategory category) {
+        this.category = category;
+    }
 
     public Integer getIdProduct() {
         return idProduct;
@@ -50,12 +63,12 @@ public class ProductEntity {
         this.description = description;
     }
 
-    public Double getPrice() {
-        return price;
+    public Double getAcquisitionPrice() {
+        return acquisitionPrice;
     }
 
-    public void setPrice(Double price) {
-        this.price = price;
+    public void setAcquisitionPrice(Double acquisitionPrice) {
+        this.acquisitionPrice = acquisitionPrice;
     }
 
     public Integer getStock() {
@@ -66,12 +79,6 @@ public class ProductEntity {
         this.stock = stock;
     }
 
-    public String getCategory() {
-        return category;
-    }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
 }
 

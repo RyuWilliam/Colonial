@@ -1,4 +1,4 @@
-package com.colonial.domain;
+package com.colonial.domain.enums;
 
 public enum Role {
     ADMIN,

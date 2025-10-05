@@ -1,6 +1,7 @@
 package com.colonial.persistence.entity;
 
 
+import com.colonial.domain.enums.TransactionType;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -9,6 +10,9 @@ import java.util.List;
 @Entity
 @Table(name = "transaction")
 public class TransactionEntity {
+
+    public TransactionEntity(){
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_transaction")
@@ -27,8 +31,20 @@ public class TransactionEntity {
     @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemEntity> items;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private TransactionType type;
+
     public Integer getIdTransaction() {
         return idTransaction;
+    }
+
+    public TransactionType getType() {
+        return type;
+    }
+
+    public void setType(TransactionType type) {
+        this.type = type;
     }
 
     public void setIdTransaction(Integer idTransaction) {

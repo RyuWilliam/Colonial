@@ -1,11 +1,15 @@
     package com.colonial.persistence.entity;
 
 
+    import com.colonial.domain.enums.Role;
     import jakarta.persistence.*;
 
     @Entity
     @Table(name = "users")
     public class UserEntity {
+
+        public UserEntity(){
+        }
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "id_user")
@@ -19,9 +23,10 @@
 
         @Column(length = 10, unique = true, nullable = false)
         private String phone;
+        @Enumerated(EnumType.STRING)
+        @Column(nullable = false, length = 20)
+        private Role role;
 
-        @Column(nullable = false)
-        private String role;
 
         public Integer getIdUser() {
             return idUser;
@@ -55,11 +60,11 @@
             this.phone = phone;
         }
 
-        public String getRole() {
+        public Role getRole() {
             return role;
         }
 
-        public void setRole(String role) {
+        public void setRole(Role role) {
             this.role = role;
         }
     }
