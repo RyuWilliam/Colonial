@@ -1,41 +1,42 @@
 package com.colonial.domain.model;
 
 import com.colonial.domain.enums.ProductCategory;
-import jakarta.validation.constraints.*;
-
-import java.util.Objects;
-
+import java.time.LocalDateTime;
 public class Product {
-    private int idProduct;
-    @NotBlank(message = "El nombre es obligatorio")
+    private Integer idProduct;
     private String name;
-
-    @Size(max = 255, message = "La descripción no puede superar 255 caracteres")
     private String description;
-
-    @NotNull(message = "El precio de adquisición es obligatorio")
-    @Positive(message = "El precio debe ser mayor a 0")
     private Double acquisitionPrice;
-
-    @Min(value = 0, message = "El stock no puede ser negativo")
-    private int stock;
-
-    @NotNull(message = "La categoría es obligatoria")
+    private Integer stock;
     private ProductCategory category;
+    private LocalDateTime lastUpdated;
 
-
-    public boolean isAvailable() {
-        return stock > 0;
+    public Product(Integer idProduct, String name, Double acquisitionPrice, Integer stock, ProductCategory category, LocalDateTime lastUpdated) {
+        this.idProduct = idProduct;
+        this.name = name;
+        this.acquisitionPrice = acquisitionPrice;
+        this.stock = stock;
+        this.category = category;
+        this.lastUpdated = lastUpdated;
     }
 
-    public Double getSellPrice() {
-        return Math.ceil(acquisitionPrice * 1.2);
+    public String getDescription() {
+        return description;
     }
-    public int getIdProduct() {
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Product(){
+
+    }
+
+    public Integer getIdProduct() {
         return idProduct;
     }
 
-    public void setIdProduct(int idProduct) {
+    public void setIdProduct(Integer idProduct) {
         this.idProduct = idProduct;
     }
 
@@ -47,14 +48,6 @@ public class Product {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public Double getAcquisitionPrice() {
         return acquisitionPrice;
     }
@@ -63,11 +56,11 @@ public class Product {
         this.acquisitionPrice = acquisitionPrice;
     }
 
-    public int getStock() {
+    public Integer getStock() {
         return stock;
     }
 
-    public void setStock(int stock) {
+    public void setStock(Integer stock) {
         this.stock = stock;
     }
 
@@ -78,15 +71,12 @@ public class Product {
     public void setCategory(ProductCategory category) {
         this.category = category;
     }
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Product product)) return false;
-        return idProduct == product.idProduct;
+
+    public LocalDateTime getLastUpdated() {
+        return lastUpdated;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(idProduct);
+    public void setLastUpdated(LocalDateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 }

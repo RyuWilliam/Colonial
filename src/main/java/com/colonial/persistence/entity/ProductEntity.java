@@ -1,15 +1,18 @@
 package com.colonial.persistence.entity;
 
-
 import com.colonial.domain.enums.ProductCategory;
 import jakarta.persistence.*;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "product")
+@Table(name = "products")
 public class ProductEntity {
 
-    public ProductEntity(){
+    public ProductEntity() {
     }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_product")
@@ -31,14 +34,11 @@ public class ProductEntity {
     @Column(nullable = false, length = 50)
     private ProductCategory category;
 
-    public ProductCategory getCategory() {
-        return category;
-    }
+    @LastModifiedDate
+    @Column(name = "last_updated")
+    private LocalDateTime lastUpdated;
 
-    public void setCategory(ProductCategory category) {
-        this.category = category;
-    }
-
+    // Getters y Setters
     public Integer getIdProduct() {
         return idProduct;
     }
@@ -46,6 +46,7 @@ public class ProductEntity {
     public void setIdProduct(Integer idProduct) {
         this.idProduct = idProduct;
     }
+
 
     public String getName() {
         return name;
@@ -79,6 +80,19 @@ public class ProductEntity {
         this.stock = stock;
     }
 
+    public ProductCategory getCategory() {
+        return category;
+    }
 
+    public void setCategory(ProductCategory category) {
+        this.category = category;
+    }
+
+    public LocalDateTime getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(LocalDateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
 }
-

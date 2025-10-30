@@ -1,30 +1,30 @@
 package com.colonial.domain.model;
-
 import com.colonial.domain.enums.Role;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+
 
 public class User {
-    private int idUser;
-
-    @NotBlank(message = "El nombre no puede estar vacío")
+    private Integer idUser;
     private String name;
-
-    @Email(message = "El correo electrónico no es válido")
     private String email;
-
-    @NotBlank(message = "El teléfono no puede estar vacío")
     private String phone;
-
-    @NotNull(message = "El rol es obligatorio")
     private Role role;
 
-    public int getIdUser() {
+    public User() {
+    }
+
+    public User(Integer idUser, String name, String email, String phone, Role role) {
+        this.idUser = idUser;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.role = role;
+    }
+
+    public Integer getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(int idUser) {
+    public void setIdUser(Integer idUser) {
         this.idUser = idUser;
     }
 

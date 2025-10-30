@@ -8,8 +8,8 @@
     @Table(name = "users")
     public class UserEntity {
 
-        public UserEntity(){
-        }
+        public UserEntity(){}
+
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "id_user")
@@ -23,10 +23,10 @@
 
         @Column(length = 10, unique = true, nullable = false)
         private String phone;
+
         @Enumerated(EnumType.STRING)
         @Column(nullable = false, length = 20)
         private Role role;
-
 
         public Integer getIdUser() {
             return idUser;

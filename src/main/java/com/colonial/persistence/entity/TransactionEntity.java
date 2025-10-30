@@ -8,19 +8,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "transaction")
+@Table(name = "transactions")
 public class TransactionEntity {
 
     public TransactionEntity(){
     }
     @Id
+    @Column(name = "id_transaction", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_transaction")
     private Integer idTransaction;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id_user", referencedColumnName = "id_user")
-    private UserEntity user;
+
+    @Column(name = "id_user", nullable = false)
+    private Integer idUser;
 
     @Column(nullable = false)
     private LocalDateTime date;
@@ -28,35 +28,31 @@ public class TransactionEntity {
     @Column(nullable = false)
     private Double total;
 
-    @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemEntity> items;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private TransactionType type;
 
+    @OneToOne
+    @JoinColumn(name = "id_user", referencedColumnName = "id_user", insertable = false, updatable = false)
+    private UserEntity user;
+
+    @OneToMany(mappedBy = "transaction", cascade = CascadeType.ALL)
+    private List<ItemEntity> items;
+
     public Integer getIdTransaction() {
         return idTransaction;
-    }
-
-    public TransactionType getType() {
-        return type;
-    }
-
-    public void setType(TransactionType type) {
-        this.type = type;
     }
 
     public void setIdTransaction(Integer idTransaction) {
         this.idTransaction = idTransaction;
     }
 
-    public UserEntity getUser() {
-        return user;
+    public Integer getIdUser() {
+        return idUser;
     }
 
-    public void setUser(UserEntity user) {
-        this.user = user;
+    public void setIdUser(Integer idUser) {
+        this.idUser = idUser;
     }
 
     public LocalDateTime getDate() {
@@ -73,6 +69,22 @@ public class TransactionEntity {
 
     public void setTotal(Double total) {
         this.total = total;
+    }
+
+    public TransactionType getType() {
+        return type;
+    }
+
+    public void setType(TransactionType type) {
+        this.type = type;
+    }
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 
     public List<ItemEntity> getItems() {

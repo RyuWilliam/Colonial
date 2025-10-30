@@ -1,22 +1,65 @@
 package com.colonial.persistence.mapper;
 
-import com.colonial.domain.model.Item;
+
+import com.colonial.domain.model.TransactionItem;
 import com.colonial.persistence.entity.ItemEntity;
-import org.mapstruct.InheritInverseConfiguration;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
-public interface ItemMapper {
+@Component
+public class ItemMapper {
+    private final ProductMapper productMapper;
 
-    @Mapping(target = "idTransaction", ignore = true)
-    @Mapping(target = "idProduct", ignore = true)
-    ItemEntity toEntity(Item item);
-    List<ItemEntity> toEntities(List<Item> items);
+    public ItemMapper(ProductMapper productMapper) {
+        this.productMapper = productMapper;
+    }
 
-    @InheritInverseConfiguration
-    Item toItem(ItemEntity item);
-    List<Item> toItems(List<ItemEntity> items);
+    public TransactionItem toItem(ItemEntity entity){
+    if(entity == null){
+        return null;
+    }
+    TransactionItem item = new TransactionItem();
+    item.setIdItem(entity.getIdItem());
+    item.setQuantity(entity.getQuantity());
+    item.setProduct(productMapper.toProduct(entity.getProduct()));
+    item.setIdTransaction(entity.getIdTransaction());
+    item.setIdProduct(entity.getIdProduct());
+    item.setPrice(entity.getPrice());
+    return item;
+    }
+
+    public ItemEntity toEntity(TransactionItem item){
+        if(item == null){
+            return null;
+        }
+        ItemEntity entity = new ItemEntity();
+        entity.setPrice(item.getPrice()!= null ? item.getPrice() : 0.0);
+        entity.setIdProduct(item.getIdProduct());
+        entity.setQuantity(item.getQuantity());
+        entity.setIdTransaction(item.getIdTransaction());
+        return entity;
+    }
+
+    public List<ItemEntity> toEntities(List<TransactionItem> items){
+        if (items == null) {
+            return null;
+        }
+        List<ItemEntity> entities = new ArrayList<>();
+        for (TransactionItem item : items) {
+            entities.add(toEntity(item));
+        }
+        return entities;
+    }
+
+    public List<TransactionItem> toItems(List<ItemEntity> entities){
+        if (entities == null) {
+            return null;
+        }
+        return entities.stream()
+                .map(this::toItem)
+                .collect(Collectors.toList());
+    }
 }

@@ -1,17 +1,37 @@
 package com.colonial.domain.model;
 
+import com.colonial.domain.enums.TransactionType;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public abstract class Transaction {
-
+public class Transaction {
     private Integer idTransaction;
-    private User user;
-    private LocalDateTime date;
+    private Integer idUser;
+    private TransactionType type;
     private Double total;
-    private List<Item> items;
+    private LocalDateTime date;
+    private List<TransactionItem> items;
 
-    public abstract void calculateTotal();
+    public Transaction(Integer idTransaction, Integer idUser, TransactionType type, LocalDateTime date, List<TransactionItem> items) {
+        this.idTransaction = idTransaction;
+        this.idUser = idUser;
+        this.type = type;
+        this.date = date;
+        this.items = items;
+    }
+
+    public Transaction() {
+
+    }
+
+
+    public Double getTotal() {
+        return total;
+    }
+
+    public void setTotal(Double total) {
+        this.total = total;
+    }
 
     public Integer getIdTransaction() {
         return idTransaction;
@@ -21,12 +41,20 @@ public abstract class Transaction {
         this.idTransaction = idTransaction;
     }
 
-    public User getUser() {
-        return user;
+    public Integer getIdUser() {
+        return idUser;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setIdUser(Integer idUser) {
+        this.idUser = idUser;
+    }
+
+    public TransactionType getType() {
+        return type;
+    }
+
+    public void setType(TransactionType type) {
+        this.type = type;
     }
 
     public LocalDateTime getDate() {
@@ -37,19 +65,11 @@ public abstract class Transaction {
         this.date = date;
     }
 
-    public Double getTotal() {
-        return total;
-    }
-
-    public void setTotal(Double total) {
-        this.total = total;
-    }
-
-    public List<Item> getItems() {
+    public List<TransactionItem> getItems() {
         return items;
     }
 
-    public void setItems(List<Item> items) {
+    public void setItems(List<TransactionItem> items) {
         this.items = items;
     }
 }

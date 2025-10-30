@@ -1,56 +1,54 @@
 package com.colonial.persistence.entity;
 
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "item")
-@IdClass(ItemId.class)
+@Table(name = "items")
 public class ItemEntity {
 
-    public ItemEntity(){
+    public ItemEntity() {
     }
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_item")
+    private Integer idItem;
+
     @Column(name = "id_transaction")
     private Integer idTransaction;
 
-    @Id
-    @Column(name = "id_product")
+    @Column(name= "id_product")
     private Integer idProduct;
 
     @Column(nullable = false)
     private Integer quantity;
+    private Double price;
 
     @ManyToOne
     @JoinColumn(name = "id_transaction", referencedColumnName = "id_transaction", insertable = false, updatable = false)
+    @JsonIgnore
     private TransactionEntity transaction;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "id_product", referencedColumnName = "id_product", insertable = false, updatable = false)
     private ProductEntity product;
 
-    public ProductEntity getProduct() {
-        return product;
+    public Integer getIdItem() {
+        return idItem;
     }
 
-    public void setProduct(ProductEntity product) {
-        this.product = product;
+    public void setIdItem(Integer idItem) {
+        this.idItem = idItem;
     }
 
-    public TransactionEntity getTransaction() {
-        return transaction;
+    public Integer getIdTransaction() {
+        return idTransaction;
     }
 
-    public void setTransaction(TransactionEntity transaction) {
-        this.transaction = transaction;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
+    public void setIdTransaction(Integer idTransaction) {
+        this.idTransaction = idTransaction;
     }
 
     public Integer getIdProduct() {
@@ -61,12 +59,35 @@ public class ItemEntity {
         this.idProduct = idProduct;
     }
 
-    public Integer getIdTransaction() {
-        return idTransaction;
+    public Integer getQuantity() {
+        return quantity;
     }
 
-    public void setIdTransaction(Integer idTransaction) {
-        this.idTransaction = idTransaction;
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public TransactionEntity getTransaction() {
+        return transaction;
+    }
+
+    public void setTransaction(TransactionEntity transaction) {
+        this.transaction = transaction;
+    }
+
+    public ProductEntity getProduct() {
+        return product;
+    }
+
+    public void setProduct(ProductEntity product) {
+        this.product = product;
     }
 }
-
