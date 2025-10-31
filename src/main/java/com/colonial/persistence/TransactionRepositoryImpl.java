@@ -8,6 +8,8 @@ import com.colonial.persistence.crud.TransactionJpaRepository;
 import com.colonial.persistence.entity.ItemEntity;
 import com.colonial.persistence.entity.ProductEntity;
 import com.colonial.persistence.entity.TransactionEntity;
+import com.colonial.persistence.exceptions.ProductNotFoundException;
+import com.colonial.persistence.exceptions.UnknownTransactionTypeException;
 import com.colonial.persistence.mapper.TransactionMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
@@ -15,7 +17,6 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class TransactionRepositoryImpl implements TransactionRepository {
@@ -35,39 +36,59 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     @Transactional
     public Transaction save(Transaction transaction) {
         double total = 0.0;
-        if(transaction.getItems()!= null) {
-            for (var item : transaction.getItems()) {
-                ProductEntity product = productJpaRepository.findById(item.getIdProduct())
-                        .orElseThrow(() -> new RuntimeException("Producto no encontrado " + item.getIdProduct()));
-                double itemPrice;
-                if (transaction.getType() != null) {
-                    if (transaction.getType() == TransactionType.PURCHASE) {
-                        itemPrice = product.getAcquisitionPrice() * item.getQuantity();
-                        item.setPrice(itemPrice);
-                        total += itemPrice;
-                    } else if (transaction.getType() == TransactionType.SALE) {
-                        itemPrice = product.getAcquisitionPrice() * item.getQuantity() *1.2;
-                        item.setPrice(itemPrice);
-                        total += itemPrice;
-                    } else {
-                        throw new RuntimeException("Transacción desconocida");
-                    }
-                }
-            }
+        if(transaction.getType() == TransactionType.PURCHASE){
+            total = calculateTotalForPurchase(transaction);
+        }
+        else if(transaction.getType() == TransactionType.SALE){
+            total = calculateTotalForSale(transaction);
+        }
+        else{
+            throw new UnknownTransactionTypeException(transaction.getType());
         }
             transaction.setTotal(total);
             TransactionEntity entity = transactionMapper.toEntity(transaction);
             TransactionEntity saved = transactionJpaRepository.save(entity);
-            if(saved.getItems()!= null){
-                for(ItemEntity item: saved.getItems()){
-                item.setIdTransaction(saved.getIdTransaction());
-                item.setTransaction(saved);
-                }
+            if(saved.getItems()!= null ){
+            assignItems(saved);
             }
             saved = transactionJpaRepository.save(saved);
             return transactionMapper.toTransaction(saved);
     }
 
+
+    public void assignItems(TransactionEntity entity){
+            for(ItemEntity item: entity.getItems()){
+                item.setIdTransaction(entity.getIdTransaction());
+                item.setTransaction(entity);
+            }
+    }
+
+
+
+    Double calculateTotalForSale(Transaction transaction){
+        double total = 0.0;
+        for(var item: transaction.getItems()){
+            ProductEntity product = productJpaRepository.findById(item.getIdProduct())
+                    .orElseThrow(() -> new ProductNotFoundException(item.getIdProduct()));
+            double itemPrice = product.getAcquisitionPrice() * item.getQuantity() * 1.2;
+            item.setPrice(itemPrice);
+            product.setStock(product.getStock() - item.getQuantity());
+            total += itemPrice;
+        }
+        return total;
+    }
+    Double calculateTotalForPurchase(Transaction transaction){
+        double total = 0.0;
+        for(var item: transaction.getItems()){
+            ProductEntity product = productJpaRepository.findById(item.getIdProduct())
+                    .orElseThrow(() -> new ProductNotFoundException(item.getIdProduct()));
+            double itemPrice = product.getAcquisitionPrice() * item.getQuantity();
+            item.setPrice(itemPrice);
+            product.setStock(product.getStock() + item.getQuantity());
+            total += itemPrice;
+        }
+        return total;
+    }
 
     @Override
     public Optional<Transaction> findById(Integer id) {

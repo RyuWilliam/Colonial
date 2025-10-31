@@ -1,23 +1,9 @@
 package com.colonial.domain.service;
 
 import com.colonial.domain.enums.TransactionType;
-import com.colonial.domain.model.Product;
 import com.colonial.domain.model.Transaction;
-import com.colonial.domain.model.TransactionItem;
-import com.colonial.domain.model.User;
-import com.colonial.domain.repository.ProductRepository;
 import com.colonial.domain.repository.TransactionRepository;
-import com.colonial.domain.repository.UserRepository;
-import com.colonial.persistence.entity.ItemEntity;
-import com.colonial.persistence.entity.ProductEntity;
-import com.colonial.persistence.entity.TransactionEntity;
-import com.colonial.persistence.entity.UserEntity;
-import com.colonial.persistence.crud.TransactionJpaRepository;
-import com.colonial.persistence.mapper.ProductMapper;
-import com.colonial.persistence.mapper.TransactionMapper;
-import com.colonial.persistence.mapper.UserMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
