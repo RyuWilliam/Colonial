@@ -6,12 +6,13 @@ import com.colonial.domain.repository.ProductRepository;
 
 import com.colonial.persistence.crud.ProductJpaRepository;
 import com.colonial.persistence.entity.ProductEntity;
+import com.colonial.persistence.exceptions.DuplicateProductNameException;
+import com.colonial.persistence.exceptions.ProductNotFoundException;
 import com.colonial.persistence.mapper.ProductMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class ProductRepositoryImpl implements ProductRepository {
@@ -26,6 +27,11 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public Product save(Product product) {
+        for(Product flag : productMapper.toProducts(productJpaRepository.findAll())){
+            if(flag.getName().equals(product.getName())){
+                throw new DuplicateProductNameException(product.getName());
+            }
+        }
         ProductEntity entity = productMapper.toEntity(product);
         return productMapper.toProduct(productJpaRepository.save(entity));
     }
@@ -45,6 +51,9 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public void deleteById(Integer id) {
+        if (!productJpaRepository.existsById(id)) {
+            throw new ProductNotFoundException(id);
+        }
         productJpaRepository.deleteById(id);
     }
 

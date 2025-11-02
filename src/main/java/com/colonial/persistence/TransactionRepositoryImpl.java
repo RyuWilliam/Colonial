@@ -2,12 +2,14 @@ package com.colonial.persistence;
 
 import com.colonial.domain.enums.TransactionType;
 import com.colonial.domain.model.Transaction;
+import com.colonial.domain.model.TransactionItem;
 import com.colonial.domain.repository.TransactionRepository;
 import com.colonial.persistence.crud.ProductJpaRepository;
 import com.colonial.persistence.crud.TransactionJpaRepository;
 import com.colonial.persistence.entity.ItemEntity;
 import com.colonial.persistence.entity.ProductEntity;
 import com.colonial.persistence.entity.TransactionEntity;
+import com.colonial.persistence.exceptions.InsufficientStockException;
 import com.colonial.persistence.exceptions.ProductNotFoundException;
 import com.colonial.persistence.exceptions.UnknownTransactionTypeException;
 import com.colonial.persistence.mapper.TransactionMapper;
@@ -63,19 +65,26 @@ public class TransactionRepositoryImpl implements TransactionRepository {
             }
     }
 
-
-
     Double calculateTotalForSale(Transaction transaction){
         double total = 0.0;
         for(var item: transaction.getItems()){
             ProductEntity product = productJpaRepository.findById(item.getIdProduct())
                     .orElseThrow(() -> new ProductNotFoundException(item.getIdProduct()));
+
+            if(availableStock(item, product)){
             double itemPrice = product.getAcquisitionPrice() * item.getQuantity() * 1.2;
             item.setPrice(itemPrice);
             product.setStock(product.getStock() - item.getQuantity());
             total += itemPrice;
+
+            }
+            else throw new InsufficientStockException(product, item);
         }
         return total;
+    }
+
+    boolean availableStock(TransactionItem item, ProductEntity product){
+        return item.getQuantity() <= product.getStock();
     }
     Double calculateTotalForPurchase(Transaction transaction){
         double total = 0.0;

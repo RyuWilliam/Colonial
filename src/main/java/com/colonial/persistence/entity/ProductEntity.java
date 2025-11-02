@@ -3,9 +3,10 @@ package com.colonial.persistence.entity;
 import com.colonial.domain.enums.ProductCategory;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-
+@EntityListeners(AuditingEntityListener.class)
 @Entity
 @Table(name = "products")
 public class ProductEntity {
