@@ -2,7 +2,10 @@ package com.colonial;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 public class ColonialApplication {
@@ -11,4 +14,10 @@ public class ColonialApplication {
 		SpringApplication.run(ColonialApplication.class, args);
 	}
 
+
+    @Bean
+    @LoadBalanced
+    public RestTemplate getRestTemplate(){
+        return new RestTemplate();
+    }
 }

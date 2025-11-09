@@ -3,6 +3,7 @@ package com.colonial.domain.service;
 import com.colonial.domain.enums.ProductCategory;
 import com.colonial.domain.model.Product;
 import com.colonial.domain.repository.ProductRepository;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
