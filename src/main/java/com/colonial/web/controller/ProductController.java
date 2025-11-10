@@ -351,4 +351,53 @@ public class ProductController {
             @PathVariable Integer id) {
         return ResponseEntity.ok(productService.existsById(id));
     }
+    @Operation(
+            summary = "Actualizar un producto existente",
+            description = """
+        Actualiza los datos de un producto identificado por su ID.
+
+        **Campos actualizables:**
+        - `description`
+        - `acquisitionPrice`
+        - `stock`
+        - `category`
+
+        **Ejemplo de solicitud:**
+        ```json
+        {
+          "description": "Nueva descripción del producto",
+          "acquisitionPrice": 220.5,
+          "stock": 45,
+          "category": "GROCERY"
+        }
+        ```
+
+        **💡 Notas:**
+        - No se puede duplicar el nombre con otro producto existente.
+        - Si el producto no existe, devuelve 404.
+        - Si el nombre está duplicado, devuelve 400.
+        """,
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Producto actualizado exitosamente"),
+                    @ApiResponse(responseCode = "404", description = "Producto no encontrado", content = @Content),
+                    @ApiResponse(responseCode = "400", description = "Nombre duplicado o datos inválidos", content = @Content)
+            }
+    )
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Product> updateProduct(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = """
+                    **Información del producto a actualizar.**
+                    Solo incluye los campos que deseas modificar.
+                    """,
+                    required = true,
+                    content = @Content(mediaType = "application/json")
+            )
+            @RequestBody Product updatedProduct,
+            @Parameter(description = "ID del producto que deseas actualizar", example = "101")
+            @PathVariable Integer id) {
+        Product product = productService.updateProduct(updatedProduct, id);
+        return ResponseEntity.ok(product);
+    }
+
 }

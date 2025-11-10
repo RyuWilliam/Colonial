@@ -60,4 +60,8 @@ public class ProductService {
     public boolean existsById(Integer id) {
         return productRepository.findById(id).isPresent();
     }
+
+    public Product updateProduct(Product product, Integer id){
+        return productRepository.updateProduct(product, id);
+    }
 }

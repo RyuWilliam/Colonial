@@ -92,4 +92,26 @@ public class ProductRepositoryImpl implements ProductRepository {
         List<ProductEntity> entities = productJpaRepository.findOutOfStockProducts();
         return productMapper.toProducts(entities);
     }
+
+    @Override
+    public Product updateProduct(Product product, Integer id) {
+        ProductEntity toUpdate = productJpaRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
+
+        for (Product flag : productMapper.toProducts(productJpaRepository.findAll())) {
+            if (flag.getName().equalsIgnoreCase(product.getName()) && !flag.getIdProduct().equals(id)) {
+                throw new DuplicateProductNameException(product.getName());
+            }
+        }
+
+        toUpdate.setName(product.getName());
+        toUpdate.setDescription(product.getDescription());
+        toUpdate.setCategory(product.getCategory());
+        toUpdate.setAcquisitionPrice(product.getAcquisitionPrice());
+        toUpdate.setStock(product.getStock());
+
+        ProductEntity saved = productJpaRepository.save(toUpdate);
+        return productMapper.toProduct(saved);
+    }
+
 }

@@ -19,4 +19,6 @@ public interface ProductRepository {
     List<Product> findProductsWithLowStock(Integer threshold);
     List<Product> findAvailableProducts();
     List<Product> findOutOfStockProducts();
+
+    Product updateProduct(Product product, Integer id);
 }
