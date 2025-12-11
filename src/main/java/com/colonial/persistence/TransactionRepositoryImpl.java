@@ -71,19 +71,18 @@ public class TransactionRepositoryImpl implements TransactionRepository {
             ProductEntity product = productJpaRepository.findById(item.getIdProduct())
                     .orElseThrow(() -> new ProductNotFoundException(item.getIdProduct()));
 
-            if(availableStock(item, product)){
+            if(availableStockForSale(item, product)){
             double itemPrice = product.getAcquisitionPrice() * item.getQuantity() * 1.2;
             item.setPrice(itemPrice);
             product.setStock(product.getStock() - item.getQuantity());
             total += itemPrice;
-
             }
             else throw new InsufficientStockException(product, item);
         }
         return total;
     }
 
-    boolean availableStock(TransactionItem item, ProductEntity product){
+    boolean availableStockForSale(TransactionItem item, ProductEntity product){
         return item.getQuantity() <= product.getStock();
     }
     Double calculateTotalForPurchase(Transaction transaction){

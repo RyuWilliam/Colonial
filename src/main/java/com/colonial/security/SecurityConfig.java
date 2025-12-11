@@ -2,6 +2,7 @@ package com.colonial.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -31,7 +32,14 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/auth/**", "/swagger-ui/**", "/users/save").permitAll()
+                        // Permitir GET /products a cualquier usuario autenticado
+                        .requestMatchers(HttpMethod.GET, "/products/**").authenticated()
+                        // Requerir rol ADMIN para POST, PUT, DELETE en cualquier ruta
+                        .requestMatchers(HttpMethod.POST, "/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/**").hasAuthority("ADMIN")
+                        // Cualquier otra petición requiere autenticación
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))

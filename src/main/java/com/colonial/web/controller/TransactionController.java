@@ -49,7 +49,7 @@ public class TransactionController {
 
     @Operation(
             summary = "Crear una nueva transacción",
-            description = """
+            description = """   
                 Registra una nueva transacción en el sistema. Puede ser una **VENTA** o una **COMPRA**.
                 
                 **Importante:**

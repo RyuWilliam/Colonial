@@ -1,10 +1,12 @@
 package com.colonial.security;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -30,8 +32,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // Evita filtrar rutas públicas
-        if (request.getServletPath().contains("/auth") || request.getServletPath().contains("/swagger")) {
+        String path = request.getServletPath();
+        if (
+                path.startsWith("/auth") ||
+                        path.startsWith("/swagger") ||
+                        path.startsWith("/users")
+        ) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -47,10 +53,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             if (jwtService.isTokenValid(jwt)) {
+                // ✅ EXTRAER EL ROL DEL TOKEN
+                final String role = jwtService.extractRole(jwt);
+
+                // ✅ CREAR AUTHORITY CON EL ROL
+                final SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
+
+                // ✅ ASIGNAR EL AUTHORITY AL USER Y AL TOKEN
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        new User(userEmail, "", Collections.emptyList()),  // usuario "falso"
+                        new User(userEmail, "", Collections.singletonList(authority)),
                         null,
-                        Collections.emptyList()
+                        Collections.singletonList(authority)
                 );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
